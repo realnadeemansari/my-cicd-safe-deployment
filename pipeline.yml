@@ -74,11 +74,13 @@ Parameters:
     Description: Train and build timeout in minutes 
     Type: String
   GitHubRepo:
-    Type: String
+    Default: realnadeemansari/my-cicd-safe-deployment
     Description: GitHub Repository in format owner / repo 
-  GitHubTokenSecretName:
     Type: String
+  GitHubTokenSecretName:
+    Default: GitHubTokenForPipeline
     Description: Name of the Secret Manager secret containing GitHub personal access token
+    Type: String
 
 Conditions:
   EmailAddressNotEmpty: !Not [!Equals [!Ref EmailAddress, ""]]
@@ -181,17 +183,6 @@ Resources:
       Protocol: "email"
       TopicArn: !Ref NotificationTopic
 
-  # CodeCommitRepository:
-  #   Type: AWS::CodeCommit::Repository 
-  #   Properties: 
-  #     RepositoryName: !Sub "amazon-sagemaker-safe-deployment-pipeline-${SageMakerProjectName}-${SageMakerProjectId}" # !Sub ${GitHubRepo}
-  #     RepositoryDescription: !Sub Sagemaker safe deployment pipeline for project ${SageMakerProjectName} with id ${SageMakerProjectId}, prefix ${ProjectPrefix} and model name ${ModelName}
-  #     Code:
-  #       S3: 
-  #         Bucket: "cf-templates-km6kxrbge00a-us-east-1"
-  #         Key: "project.zip"
-  #       BranchName: !Ref GitBranch
-
   BuildProject:
     Type: AWS::CodeBuild::Project
     Properties: 
@@ -280,11 +271,10 @@ Resources:
                 Version: "1"
                 Provider: GitHub
               Configuration: 
-                Owner: !Select [0, !Select ["/", !Ref GitHubRepo]]
-                Repo: !Select [1, !Select ["/", !Ref GitHubRepo]]
+                Owner: !Select [0, !Split ["/", !Ref GitHubRepo]]
+                Repo: !Select [1, !Split ["/", !Ref GitHubRepo]]
                 OAuthToken: !Sub "{{resolve:secretsmanager:${GitHubTokenSecretName}:SecretString:token}}"
                 PollForSourceChanges: false
-                # RepositoryName: !GetAtt CodeCommitRepository.Name
                 Branch: !Ref GitBranch
               OutputArtifacts:
                 - Name: ModelSourceOutput
@@ -412,30 +402,6 @@ Resources:
                 TemplatePath: BuildOutput::packaged-model-prd.yml
               RunOrder: 1
   
-  CodeCommitEventRule:
-    Type: AWS::Events::Rule 
-    Properties:
-      Name: !Sub ${ProjectPrefix}-${ModelName}-${SageMakerProjectId}-codecommit-pipeline
-      Description: "AWS CodeCommit change to trigger AWS Code Pipeline"
-      EventPattern:
-        source:
-          - "aws.codecommit"
-        detail-type:
-          - "CodeCommit Repository State Change"
-        resources:
-          - !GetAtt CodeCommitRepository.Arn
-        detail:
-          referenceType:
-            - "branch"
-          referenceName:
-            - !Ref GitBranch
-      Targets:
-        - Arn: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${DeployPipeline}"
-          RoleArn: !GetAtt CloudWatchEventRole.Arn
-          Id: !Sub codepipeline-${DeployPipeline}
-        - Arn: !Ref NotificationTopic
-          Id: "CodeCommitRule"
-  
   S3EventRule:
     Type: AWS::Events::Rule
     Properties: 
@@ -461,6 +427,20 @@ Resources:
         - Arn: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${DeployPipeline}"
           RoleArn: !GetAtt CloudWatchEventRole.Arn
           Id: !Sub codepipeline-${DeployPipeline}
+
+  SagemakerCodeRepository:
+    Type: "AWS::SageMaker::CodeRepository"
+    Properties: 
+      CodeRepositoryName: !Sub ${ProjectPrefix}-${ModelName}-code-repo
+      GitConfig:
+        RepositoryUrl: !Sub https://github.com/${GitHubRepo}.git
+        Branch: !Ref GitBranch
+        SecretArn: "arn:aws:secretsmanager:us-east-1:395435558728:secret:GitHubTokenForPipeline-mdqlRL"
+      Tags: 
+        - Key: "sagemaker:project-id"
+          Value: !Ref SageMakerProjectId
+        - Key: "sagemaker:project-name"
+          Value: !Ref SageMakerProjectName
 
   RetrainRule:
     Type: AWS::Events::Rule
@@ -511,22 +491,6 @@ Resources:
             InputTemplate: |
               "The schedule rule has been triggered"
 
-  CodeCommitPolicy:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: !Sub ${ProjectPrefix}-codecommit-policy
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Sid: AlowCodeCommit
-            Effect: Allow
-            Action:
-              - codecommit:*
-            Resource: !GetAtt CodeCommitRepository.Arn
-      Roles:
-        - !Ref SageMakerRole
-        - !Ref PipelineRole
-
   StepFunctionsPolicy:
     Type: AWS::IAM::Policy
     Properties:
@@ -541,6 +505,11 @@ Resources:
             Resource:
               - !Sub "arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:${ProjectPrefix}-${ModelName}*"
               - !Sub "arn:aws:states:${AWS::Region}:${AWS::AccountId}:execution:${ProjectPrefix}-${ModelName}*:*"
+          - Sid: AllowSecretsManager
+            Effect: Allow
+            Action: 
+              - secretsmanager:GetSecretValue
+            Resource: "*"
           - Sid: AllowPassRoleStepFunctions
             Effect: Allow
             Action:
@@ -830,11 +799,16 @@ Resources:
                 Action:
                   - iam:PassRole
                 Resource: !GetAtt DeployRole.Arn
-              - Sid: AllowCodeCommit
+              - Sid: S3AccessForPipelineStage
                 Effect: Allow
                 Action:
-                  - codecommit:GetBranch
-                Resource: !GetAtt CodeCommitRepository.Arn
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                  - s3:GetBucketLocation
+                  - s3:ListBucket
+                Resource:
+                  - !Ref ArtifactBucket
+                  - !Sub ${ArtifactBucket}/*
 
   DeployRole:
     Type: "AWS::IAM::Role"
@@ -974,4 +948,3 @@ Outputs:
     Value: !Ref KMSKey
   NotificationTopic:
     Value: !Ref NotificationTopic
-
