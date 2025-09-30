@@ -55,8 +55,8 @@ phases:
       - aws cloudformation package --template-file assets/deploy-model-prd.yml --output-template-file assets/packaged-model-prd.yml --s3-bucket $ARTIFACT_BUCKET
       - echo Done
 
-  artifacts:
-    files: 
-      - assets/*.json
-      - assets/*.yml
-    discard-paths: yes
+artifacts:
+  files: 
+    - assets/*.json
+    - assets/*.yml
+  discard-paths: yes
