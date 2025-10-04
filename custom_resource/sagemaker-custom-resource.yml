@@ -1,0 +1,13 @@
+Description: Template for sagemaker lambda cloud formation custom resources
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  AddTransformHeaderFunction:
+    Type: AWS::Serverless::Function 
+    Properties: 
+      FunctionName: mlops-add-transform-header
+      CodeUri: .
+      Handler: sagemaker_add_transform_header.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt SagemakerCustomResourceRole.Arn
+      Description: "Prepend header to a batch transform job"
+      
