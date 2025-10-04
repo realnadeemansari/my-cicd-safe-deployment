@@ -21,6 +21,26 @@ Resources:
       Role: !GetAtt SagemakerCustomResourceRole.Arn
       Description: "Create a SageMaker experiment and trial"
 
+      QueryDriftFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: mlops-query-drift
+      CodeUri: .
+      Handler: sagemaker_query_drift.lambda_handler
+      Runtime: python3.10
+      Role: !GetAtt SagemakerCustomResourceRole.Arn
+      Description: "Query processing job to return drift"
+
+  QueryTrainingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: mlops-query-training
+      CodeUri: .
+      Handler: sagemaker_query_training.lambda_handler
+      Runtime: python3.10
+      Role: !GetAtt SagemakerCustomResourceRole.Arn
+      Description: "Query training job to return results"
+
   SagemakerCustomResourceRole:
     Type: AWS::IAM::Role
     Properties:
