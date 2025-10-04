@@ -7,9 +7,19 @@ Resources:
       FunctionName: mlops-add-transform-header
       CodeUri: .
       Handler: sagemaker_add_transform_header.lambda_handler
-      Runtime: python3.7
+      Runtime: python3.10
       Role: !GetAtt SagemakerCustomResourceRole.Arn
       Description: "Prepend header to a batch transform job"
+
+  CreateExperimentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: mlops-create-experiment
+      CodeUri: .
+      Handler: sagemaker_create_experiment.lambda_handler
+      Runtime: python3.10
+      Role: !GetAtt SagemakerCustomResourceRole.Arn
+      Description: "Create a SageMaker experiment and trial"
 
   SagemakerCustomResourceRole:
     Type: AWS::IAM::Role
