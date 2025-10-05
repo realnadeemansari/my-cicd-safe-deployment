@@ -21,7 +21,7 @@ Resources:
       Role: !GetAtt SagemakerCustomResourceRole.Arn
       Description: "Create a SageMaker experiment and trial"
 
-      QueryDriftFunction:
+  QueryDriftFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: mlops-query-drift
