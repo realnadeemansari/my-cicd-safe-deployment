@@ -428,7 +428,6 @@ if __name__ == "__main__":
         help="The role arn for the pipeline service execution role."
     )
     parser.add_argument(
-        "-tags",
         "--tags",
         dest="tags",
         default=None,
