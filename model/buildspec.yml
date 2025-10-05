@@ -37,7 +37,7 @@ phases:
         --deploy-role=$DEPLOY_ROLE_ARN \
         --sagemaker-role=$SAGEMAKER_ROLE_ARN \
         --sagemaker-bucket=$SAGEMAKER_BUCKET \
-        --data-dir=CODEBUILD_SRC_DIR_DataSourceOutput \
+        --data-dir=$CODEBUILD_SRC_DIR_DataSourceOutput \
         --output-dir=$CODEBUILD_SRC_DIR/assets \
         --kms-key-id=$KMS_KEY_ID \
         --workflow-role-arn=$WORKFLOW_ROLE_ARN \
