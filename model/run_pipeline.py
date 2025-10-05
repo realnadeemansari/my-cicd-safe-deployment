@@ -427,12 +427,12 @@ if __name__ == "__main__":
         type=str,
         help="The role arn for the pipeline service execution role."
     )
-    parser.add_argument(
-        "--tags",
-        dest="tags",
-        default=None,
-        help="""List of dict strings of '[{"Key": "string", "Value": "string"}, ..]'""",
-    )
+    # parser.add_argument(
+    #     "--tags",
+    #     dest="tags",
+    #     default=None,
+    #     help="""List of dict strings of '[{"Key": "string", "Value": "string"}, ..]'""",
+    # )
     parser.add_argument("--codebuild-id", required=True)
     parser.add_argument("--data-dir", required=True)
     parser.add_argument("--output-dir", required=True)

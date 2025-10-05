@@ -29,7 +29,6 @@ phases:
       - |
         python model/run_pipeline.py \
         --role-arn=$SAGEMAKER_ROLE_ARN\
-        --tags "[{\"Key\":\"sagemaker:project-name\", \"Value\":\"${SAGEMAKER_PROJECT_NAME}\"}, {\"Key\":\"sagemaker:project-id\", \"Value\":\"${SAGEMAKER_PROJECT_ID}\"}]" \
         --git-branch=$GIT_BRANCH \
         --codebuild-id=$CODEBUILD_BUILD_ID \
         --pipeline-name=$PIPELINE_NAME \
