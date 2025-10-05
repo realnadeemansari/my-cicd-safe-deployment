@@ -35,7 +35,7 @@ def create_baseline_step(input_data, execution_input, region, role):
     dataset_format = DatasetFormat.csv()
     env = {
         "dataset_format": json.dumps(dataset_format),
-        "dataset_source": "/opt/ml/processing/input/baseline_datatset_input",
+        "dataset_source": "/opt/ml/processing/input/baseline_dataset_input",
         "output_path": "/opt/ml/processing/output",
         "publish_cloudwatch_metrics": "Disabled"
     }
