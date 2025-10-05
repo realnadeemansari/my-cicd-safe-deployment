@@ -56,7 +56,7 @@ def create_baseline_step(input_data, execution_input, region, role):
     ]
     # Get the default model monitor container
     model_monitor_container_uri = retrieve(
-        region=region, framework="model_monitor", version="latest"
+        region=region, framework="model-monitor", version="latest"
     )
     # Create the processor
     monitor_analyzer = Processor(
