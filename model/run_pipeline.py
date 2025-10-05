@@ -308,9 +308,9 @@ def main(
     print(f"image uri: {image_uri}")
     with open(os.path.join(data_dir, "inputData.json"), "r") as f:
         input_data = json.load(f)
-        print(f"training uri: {input_data["TrainingUri"]}")
-        print(f"validation uri: {input_data["ValidationUri"]}")
-        print(f"baseline uri: {input_data["BaselineUri"]}")
+        print(f"training uri: {input_data['TrainingUri']}")
+        print(f"validation uri: {input_data['ValidationUri']}")
+        print(f"baseline uri: {input_data['BaselineUri']}")
 
     # Get the job id and source revisions
     job_id = get_pipeline_execution_id(pipeline_name, codebuild_id)
@@ -326,7 +326,7 @@ def main(
         "ModelOutputUri": f"s3://{sagemaker_bucket}/{model_name}",
         "BaselineOutputUri": f"s3://{sagemaker_bucket}/{model_name}/monitoring/baseline/{model_name}-pbl-{job_id}"
     }
-    print(f"model output uri: {output_data["ModelOutputUri"]}")
+    print(f"model output uri: {output_data['ModelOutputUri']}")
 
     # Pass these into the training method
     hyperparameters = {}

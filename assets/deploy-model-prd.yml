@@ -124,7 +124,7 @@ Resources:
       FunctionName: !Sub ${ModelName}-api
       CodeUri: ../api
       Handler: app.lambda_handler
-      Runtime: python3.7
+      Runtime: python3.10
       Role: !GetAtt ApiFunctionRole.Arn
       KmsKeyArn: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}
       AutoPublishAlias: "live"
@@ -192,7 +192,7 @@ Resources:
       FunctionName: !Sub "CodeDeployHook_mlops-${ModelName}-PreTrafficLambdaFunction"
       CodeUri: ../api
       Handler: pre_traffic_hook.lambda_handler
-      Runtime: python3.7
+      Runtime: python3.10
       Timeout: 30
       KmsKeyArn: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}
       Policies:
@@ -224,7 +224,7 @@ Resources:
       FunctionName: !Sub "CodeDeployHook_mlops-${ModelName}-PostTrafficLambdaFunction"
       CodeUri: ../api
       Handler: post_traffic_hook.lambda_handler
-      Runtime: python3.7
+      Runtime: python3.10
       Timeout: 30
       KmsKeyArn: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}
       Policies:
