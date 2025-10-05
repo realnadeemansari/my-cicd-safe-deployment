@@ -440,7 +440,7 @@ if __name__ == "__main__":
     parser.add_argument("--ecr-dir", required=False)
     parser.add_argument("--pipeline-name", required=True)
     parser.add_argument("--model-name", required=True)
-    parser.add_argument("--deploy-rol", required=True)
+    parser.add_argument("--deploy-role", required=True)
     parser.add_argument("--sagemaker-role", required=True)
     parser.add_argument("--sagemaker-bucket", required=True)
     parser.add_argument("--kms-key-id", required=True)
