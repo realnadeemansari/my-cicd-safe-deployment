@@ -12,9 +12,9 @@ from sagemaker.processing import Processor, ProcessingInput, ProcessingOutput
 from sagemaker.model_monitor.dataset_format import DatasetFormat
 
 import stepfunctions
-from stepfuntions import steps
-from stepfuntions.inputs import ExecutionInput
-from stepfuntions.workflow import Workflow
+from stepfunctions import steps
+from stepfunctions.inputs import ExecutionInput
+from stepfunctions.workflow import Workflow
 
 def create_experiment_step(create_experiment_function_name):
     create_experiment_step = steps.compute.LambdaStep(
