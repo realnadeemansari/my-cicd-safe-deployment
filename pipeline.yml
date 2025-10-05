@@ -573,6 +573,7 @@ Resources:
               - sagemaker:StopProcessingJob
               - sagemaker:StopTrainingJob
               - sagemaker:StopTransformJob
+              - sagemaker:AddTags
               - kms:CreateGrant
             Resource:
               - !Sub arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:*/${ProjectPrefix}-${ModelName}*
@@ -601,6 +602,7 @@ Resources:
               - s3:GetBucket*
               - s3:GetObject*
               - s3:PutObject
+              - s3:ListBucket
             Resource:
               - !Sub arn:aws:s3:::${DatasetBucket}/*
               - !Sub arn:aws:s3:::${ArtifactBucket}/*
@@ -908,6 +910,7 @@ Resources:
                   - lambda:RemovePermission
                   - lambda:UpdateFunctionCode
                   - lambda:UpdateFunctionConfiguration
+                  - lambda:TagResource
                   - sns:CreateTopic
                   - sns:DeleteTopic
                   - sns:GetTopicAttributes
