@@ -789,6 +789,7 @@ Resources:
                   - lambda:AddPermission
                   - lambda:CreateFunction
                   - lambda:DeleteFunction
+                  - lambda:GetFunctionConfiguration
                 Resource: "*"
               - Sid: CodeBuild
                 Effect: Allow
