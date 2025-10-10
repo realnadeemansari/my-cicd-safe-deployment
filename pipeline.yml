@@ -789,6 +789,7 @@ Resources:
                   - lambda:AddPermission
                   - lambda:CreateFunction
                   - lambda:DeleteFunction
+                  - lambda:GetFunctionConfiguration
                 Resource: "*"
               - Sid: CodeBuild
                 Effect: Allow
@@ -912,6 +913,7 @@ Resources:
                   - lambda:UpdateFunctionCode
                   - lambda:UpdateFunctionConfiguration
                   - lambda:TagResource
+                  - lambda:GetFunctionConfiguration
                   - sns:CreateTopic
                   - sns:DeleteTopic
                   - sns:GetTopicAttributes
